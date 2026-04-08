@@ -110,4 +110,9 @@ After `update-grub`, Ubuntu usually detects Windows Boot Manager again if it is 
 
 Before running the reinstall, identify the Ubuntu root partition by checking which one has `ext4`, `btrfs`, or `xfs` once mounted, or by using `blkid` output. The EFI partition should be FAT32 and usually small, which matches `nvme0n1p1` here. [ubuntu-mate](https://ubuntu-mate.community/t/system-restore-or-fast-migration-to-another-ssd-with-different-disk-structure/23906/16)
 
+---
+
+<img width="593" height="97" alt="image" src="https://github.com/user-attachments/assets/08d84986-46d6-4538-8208-0e8a4d9bfea3" />
+
+
 If you want, I can help you identify the exact Ubuntu root partition from the remaining `blkid` output and then give you the exact commands with the right device names.
