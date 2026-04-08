@@ -172,6 +172,40 @@ Key points:
   ```
   and match the UUID to the one in `/etc/fstab` once mounted. [ubuntu-mate](https://ubuntu-mate.community/t/system-restore-or-fast-migration-to-another-ssd-with-different-disk-structure/23906/16)
 
-If you tell me which `nvme0n1p*` partition holds your Ubuntu root (or paste `sudo blkid` output), I can give you the exact commands with the correct device names.
-
 ---
+
+
+Yes — that **is** a third Linux install, and it’s already the active system you’re booted into on `/dev/nvme0n1p5`. `update-grub` found the other two installs because `os-prober` is working, but your boot menu is still hidden, so you may not see all entries unless you change the GRUB timeout settings. [help.ubuntu](https://help.ubuntu.com/community/Grub2/Setup)
+
+## What your output means
+
+- `/dev/nvme0n1p5` is the current root filesystem, so it is your installed Ubuntu system. [baeldung](https://www.baeldung.com/linux/grub-bootloader-add-new-os)
+- `/dev/nvme0n1p6` and `/dev/nvme0n1p8` are separate Linux installs that GRUB detected automatically. [omgubuntu.co](https://www.omgubuntu.co.uk/2021/12/grub-doesnt-detect-windows-linux-distros-fix)
+- If you expected a *different* third Linux system, it may already be the one you’re booted into, or it may not be scanned because it is not installed as a normal bootable Linux system. [umutsagir](https://www.umutsagir.com/solution-to-os-prober-not-finding-other-operating-systems-windows-linux/)
+
+## Why it looks confusing
+
+GRUB does not list “everything on disk” in a simple way. It adds bootable entries it can detect, and on Ubuntu that usually means the current system, other Linux installs found by `os-prober`, and Windows boot entries. Since your menu is hidden with `GRUB_TIMEOUT_STYLE=hidden` and `GRUB_TIMEOUT=0`, the entries can exist but remain invisible at startup. [help.ubuntu](https://help.ubuntu.com/community/Grub2/Setup)
+
+## What to do next
+
+Set the menu to show briefly so you can confirm all entries are present:
+
+```bash
+GRUB_TIMEOUT_STYLE=menu
+GRUB_TIMEOUT=5
+```
+
+Then run:
+
+```bash
+sudo update-grub
+```
+
+This should let you see whether the third install appears in the menu. [omgubuntu.co](https://www.omgubuntu.co.uk/2021/12/grub-doesnt-detect-windows-linux-distros-fix)
+
+## If the third OS still does not appear
+
+If it is a separate Linux distribution, you may need a manual GRUB entry or a `custom.cfg` entry that chainloads the other system’s own GRUB configuration. That is often the cleanest approach when `os-prober` detects some systems but misses one partition. [forum.endeavouros](https://forum.endeavouros.com/t/how-to-create-custom-grub-menu-entry-for-other-os/53423)
+
+If you want, I can help you work out whether `/dev/nvme0n1p5` is the third distro or the main Ubuntu install, and then give you the exact GRUB entry to add.
