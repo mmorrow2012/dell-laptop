@@ -68,7 +68,17 @@ nvme0n1     259:0    0 476.9G  0 disk
 ├─nvme0n1p6 259:6    0  90.7G  0 part 
 ├─nvme0n1p7 259:7    0   977M  0 part 
 └─nvme0n1p8 259:8    0  43.7G  0 part 
+ubuntu@ubuntu:~$
+ubuntu@ubuntu:~$ blkid
+/dev/nvme0n1p1: UUID="208C-B6FE" BLOCK_SIZE="512" TYPE="vfat" PARTLABEL="EFI system partition" PARTUUID="a4879aec-9141-4122-ae4e-64da12051ef1"
+/dev/nvme0n1p3: LABEL="Windows" BLOCK_SIZE="512" UUID="CEF69891F6987C01" TYPE="ntfs" PARTLABEL="Basic data partition" PARTUUID="9de1208c-e10d-416c-a715-9233802aa727"
+/dev/nvme0n1p4: LABEL="Recovery" BLOCK_SIZE="512" UUID="A6948EF4948EC5F1" TYPE="ntfs" PARTLABEL="Basic data partition" PARTUUID="a76f6955-079e-4360-9bae-61c2c3182f97"
+/dev/nvme0n1p5: UUID="a2f06285-5e81-475a-a4bc-176aecada20b" BLOCK_SIZE="4096" TYPE="ext4" PARTUUID="fc397652-d97d-415d-ae18-3b0a9b213510"
+/dev/nvme0n1p6: UUID="d0f7d013-d743-4263-85e6-81d5a5945492" BLOCK_SIZE="4096" TYPE="ext4" PARTUUID="3e39ac55-edcc-456c-8e09-fecfb62a6d58"
+/dev/nvme0n1p8: UUID="3bb9183a-66a4-4fc5-9d9b-fb03e4e99797" BLOCK_SIZE="4096" TYPE="ext4" PARTUUID="1d870085-8f18-43a5-b0ed-035472eb27b3"
+/dev/sda1: LABEL="UBUNTU22" UUID="A266-CC8A" BLOCK_SIZE="512" TYPE="vfat" PARTUUID="2bc0126f-01"
 ubuntu@ubuntu:~$ 
+
 ```
 ---
 
