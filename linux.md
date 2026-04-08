@@ -70,3 +70,44 @@ nvme0n1     259:0    0 476.9G  0 disk
 └─nvme0n1p8 259:8    0  43.7G  0 part 
 ubuntu@ubuntu:~$ 
 ```
+---
+
+Your disk layout looks like a typical UEFI setup, and the most likely Ubuntu EFI partition is **`nvme0n1p1`** because it is the 500 MB partition at the start of the NVMe drive. The Ubuntu root partition is likely one of the larger Linux partitions, but I would need its filesystem type or mountpoint to name it with confidence. [forum.ubuntu-fr](https://forum.ubuntu-fr.org/viewtopic.php?id=2083199)
+
+## What to mount
+
+Use these as the first guesses:
+
+- EFI System Partition: `nvme0n1p1` [reddit](https://www.reddit.com/r/Gentoo/comments/1ikkaj6/i_did_grubinstall_devnvme0n1_instead_of/)
+- Ubuntu root partition: likely one of `nvme0n1p3`, `nvme0n1p4`, `nvme0n1p5`, `nvme0n1p6`, `nvme0n1p7`, or `nvme0n1p8`, depending on where Ubuntu is installed [reddit](https://www.reddit.com/r/linuxquestions/comments/us10r5/repair_boot_brug/)
+
+## Repair commands
+
+If `nvme0n1p5` turns out to be your Ubuntu root partition, the repair flow would be:
+
+```bash
+sudo mount /dev/nvme0n1p5 /mnt
+sudo mount /dev/nvme0n1p1 /mnt/boot/efi
+
+for i in /dev /proc /sys /run; do sudo mount --rbind "$i" "/mnt$i"; done
+sudo mount --bind /sys/firmware/efi/efivars /mnt/sys/firmware/efi/efivars
+
+sudo chroot /mnt
+grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=ubuntu
+update-grub
+exit
+
+sudo reboot
+```
+
+That `--efi-directory=/boot/efi` step is the standard UEFI reinstall method, and binding `efivars` helps GRUB and `efibootmgr` work correctly in the chroot. [wiki.debian](https://wiki.debian.org/GrubEFIReinstall)
+
+## If Windows should appear
+
+After `update-grub`, Ubuntu usually detects Windows Boot Manager again if it is still present on the EFI partition. If it does not appear, the usual causes are that the Windows EFI files are missing, the wrong partition was mounted, or Fast Startup/hibernation is interfering. [youtube](https://www.youtube.com/watch?v=HPHZ3hSp6mE)
+
+## Safer next check
+
+Before running the reinstall, identify the Ubuntu root partition by checking which one has `ext4`, `btrfs`, or `xfs` once mounted, or by using `blkid` output. The EFI partition should be FAT32 and usually small, which matches `nvme0n1p1` here. [ubuntu-mate](https://ubuntu-mate.community/t/system-restore-or-fast-migration-to-another-ssd-with-different-disk-structure/23906/16)
+
+If you want, I can help you identify the exact Ubuntu root partition from the remaining `blkid` output and then give you the exact commands with the right device names.
