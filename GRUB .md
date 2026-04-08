@@ -128,3 +128,4 @@ If you want, I can help you identify the exact Ubuntu root partition from the re
 
 <img width="925" height="597" alt="image" src="https://github.com/user-attachments/assets/5fee25b4-69bb-4884-98d9-cf6ff37fe414" />
 
+<img width="928" height="650" alt="image" src="https://github.com/user-attachments/assets/4b51e047-e291-4542-b3ce-03a2546cabdc" />
