@@ -129,3 +129,49 @@ If you want, I can help you identify the exact Ubuntu root partition from the re
 <img width="925" height="597" alt="image" src="https://github.com/user-attachments/assets/5fee25b4-69bb-4884-98d9-cf6ff37fe414" />
 
 <img width="928" height="650" alt="image" src="https://github.com/user-attachments/assets/4b51e047-e291-4542-b3ce-03a2546cabdc" />
+
+---
+
+That error means you are running `update-grub` from the live session instead of from inside your installed system, so GRUB is trying to probe the live environment’s `/cow` overlay. You must chroot into your installed Ubuntu first, then run `update-grub` there. [wiki.debian](https://wiki.debian.org/GrubEFIReinstall)
+
+## Do this in order
+
+From your current live session terminal:
+
+```bash
+# 1. Mount your Ubuntu root partition (adjust if yours is different)
+sudo mount /dev/nvme0n1p5 /mnt
+
+# 2. Mount the EFI partition
+sudo mount /dev/nvme0n1p1 /mnt/boot/efi
+
+# 3. Bind-mount system directories
+for i in /dev /proc /sys /run; do sudo mount --rbind "$i" "/mnt$i"; done
+sudo mount --bind /sys/firmware/efi/efivars /mnt/sys/firmware/efi/efivars
+
+# 4. Chroot into the installed system
+sudo chroot /mnt
+
+# 5. Now run update-grub from inside the chroot
+update-grub
+
+# 6. Reinstall GRUB to the EFI partition
+grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=ubuntu
+
+# 7. Exit and reboot
+exit
+sudo reboot
+```
+
+Key points:
+
+- The `/cow` error happens because the live session uses a copy-on-write overlay; `update-grub` must be run from the real root filesystem in a chroot. [reddit](https://www.reddit.com/r/linuxquestions/comments/us10r5/repair_boot_brug/)
+- Make sure `/dev/nvme0n1p5` is actually your Ubuntu root partition. If you are unsure, confirm with:
+  ```bash
+  sudo blkid | grep -E 'ext4|btrfs|xfs'
+  ```
+  and match the UUID to the one in `/etc/fstab` once mounted. [ubuntu-mate](https://ubuntu-mate.community/t/system-restore-or-fast-migration-to-another-ssd-with-different-disk-structure/23906/16)
+
+If you tell me which `nvme0n1p*` partition holds your Ubuntu root (or paste `sudo blkid` output), I can give you the exact commands with the correct device names.
+
+---
