@@ -1,3 +1,50 @@
+To repair GRUB on Ubuntu, the usual fix is to boot a live Ubuntu USB, mount your installed system, chroot into it, then reinstall GRUB and regenerate the menu. [cyberpanel](https://cyberpanel.net/blog/install-grub-on-ubuntu)
+
+## Standard repair steps
+
+1. Boot from an Ubuntu live USB and choose **Try Ubuntu**. [help.ubuntu](https://help.ubuntu.com/community/Boot-Repair)
+2. Identify your Linux partitions with `lsblk` or `fdisk -l`. [youtube](https://www.youtube.com/watch?v=ZhxBJ3yh2OY)
+3. Mount your root partition to `/mnt`. [cyberpanel](https://cyberpanel.net/blog/install-grub-on-ubuntu)
+4. If you have a separate `/boot` or `/boot/efi`, mount those too. [youtube](https://www.youtube.com/watch?v=ZhxBJ3yh2OY)
+5. Bind the system directories and chroot into your install. [cyberpanel](https://cyberpanel.net/blog/install-grub-on-ubuntu)
+6. Reinstall GRUB:
+   - BIOS/legacy: `grub-install /dev/sdX` [help.ubuntu](https://help.ubuntu.com/community/Grub2/Installing)
+   - UEFI: `grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=ubuntu` [cyberpanel](https://cyberpanel.net/blog/install-grub-on-ubuntu)
+7. Run `update-grub`, then exit and reboot. [help.ubuntu](https://help.ubuntu.com/community/Grub2/Installing)
+
+## Example commands
+
+For a typical UEFI system, the flow looks like this:
+
+```bash
+sudo mount /dev/sdXY /mnt
+sudo mount /dev/sdXZ /mnt/boot/efi
+sudo mount --bind /dev /mnt/dev
+sudo mount --bind /proc /mnt/proc
+sudo mount --bind /sys /mnt/sys
+sudo chroot /mnt
+grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=ubuntu
+update-grub
+exit
+sudo reboot
+```
+
+The exact device names matter, so replace `/dev/sdXY` and `/dev/sdXZ` with your real root and EFI partitions. [youtube](https://www.youtube.com/watch?v=ZhxBJ3yh2OY)
+
+## Easier option
+
+If you want a simpler method, Ubuntu’s Boot-Repair tool can often reinstall GRUB automatically from a live session. That is often the quickest route when you are not sure which partition or boot mode you are using. [linuxconfig](https://linuxconfig.org/ubuntu-22-04-boot-repair-how-to-guide)
+
+## Common case checks
+
+- If you see `grub rescue>`, the bootloader is damaged or cannot find its files. [geeksforgeeks](https://www.geeksforgeeks.org/techtips/how-to-fix-grub-bootloader-in-ubuntu/)
+- If you dual-boot with Windows, make sure the EFI System Partition is mounted correctly and Windows Fast Startup is disabled if it is causing NTFS hibernation issues. [discourse.ubuntu](https://discourse.ubuntu.com/t/bootloader-grub-lost-after-ubuntu-upgrade-on-dual-boot/62345)
+- If the GRUB menu is hidden but Ubuntu still boots, editing `/etc/default/grub` and setting a visible timeout can help. [cyberpanel](https://cyberpanel.net/blog/install-grub-on-ubuntu)
+
+If you want, I can give you the exact commands for either **UEFI** or **legacy BIOS**, or for a **dual-boot Windows + Ubuntu** setup.
+
+---
+
 ```bash
 ubuntu@ubuntu:~$ lsblk
 NAME        MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
