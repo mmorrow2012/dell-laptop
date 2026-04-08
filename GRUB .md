@@ -208,4 +208,46 @@ This should let you see whether the third install appears in the menu. [omgubunt
 
 If it is a separate Linux distribution, you may need a manual GRUB entry or a `custom.cfg` entry that chainloads the other system’s own GRUB configuration. That is often the cleanest approach when `os-prober` detects some systems but misses one partition. [forum.endeavouros](https://forum.endeavouros.com/t/how-to-create-custom-grub-menu-entry-for-other-os/53423)
 
-If you want, I can help you work out whether `/dev/nvme0n1p5` is the third distro or the main Ubuntu install, and then give you the exact GRUB entry to add.
+---
+
+**Grub Customizer** is the easiest way to rename those entries visually without editing generated files. Here's how:
+## Install Grub Customizer (Recommended)
+```bash
+sudo add-apt-repository ppa:danielrichter2007/grub-customizer
+sudo apt update
+sudo apt install grub-customizer
+```
+
+Launch it (`grub-customizer`), authenticate as root, and you'll see your boot entries listed. Just double-click each Ubuntu 24.04 entry and rename:
+- Current system → "Ubuntu 24.04.4 - instance #1"  
+- `/dev/nvme0n1p8` → "Ubuntu 24.04.4 - instance #2"
+
+Click **Save**. [youtube](https://www.youtube.com/watch?v=IRxC-WEhjkI)
+## Manual method (if you prefer CLI)
+Create `/etc/grub.d/40_custom` and add:
+
+```
+menuentry 'Ubuntu 24.04.4 - instance #1' --class ubuntu --class gnu-linux --class gnu --class os {
+	set root='hd0,gpt5'
+	linux /vmlinuz-6.14.0-24-generic root=UUID=<uuid-of-p5> ro quiet splash
+	initrd /initrd.img-6.14.0-24-generic
+}
+
+menuentry 'Ubuntu 24.04.4 - instance #2' --class ubuntu --class gnu-linux --class gnu --class os {
+	set root='hd0,gpt8'
+	linux /vmlinuz root=UUID=<uuid-of-p8> ro quiet splash
+	initrd /initrd.img
+}
+```
+
+**Get UUIDs first:**
+```bash
+sudo blkid /dev/nvme0n1p5
+sudo blkid /dev/nvme0n1p8
+```
+
+Then `sudo update-grub`.
+## Recommendation
+Use **Grub Customizer** — it's purpose-built for exactly this and survives `update-grub` runs. Your multi-boot setup is already perfect; this just gives clearer labels. [ubuntuhandbook](https://ubuntuhandbook.org/index.php/2022/04/install-grub-customizer-ubuntu-2204/)
+
+Reboot after saving to test!
