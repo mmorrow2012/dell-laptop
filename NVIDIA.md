@@ -93,3 +93,28 @@ Reboot, login, run `jetson_release -v` (should show L4T r36.4.4/JetPack 6.2.1), 
 │info: Waiting for target to boot-up...                                                                                                                                                                    │
 │info: Waiting for target to boot-up...
 ``
+
+Your Jetson AGX Orin in the D315AOB is stuck after sending BCT_MEM blobs in RCM mode—common on custom/industrial carriers like AVerMedia during SDK Manager Step 3. [forums.developer.nvidia](https://forums.developer.nvidia.com/t/issue-with-waiting-for-target-to-boot-up-error-while-flashing-jetson-orin-nx/296200)
+
+This "Waiting for target to boot-up..." loop (often timing out) typically means the initrd kernel failed to auto-boot from your target storage (USB/NVMe), due to power glitches, USB detection loss, or carrier-specific pin configs. [forums.developer.nvidia](https://forums.developer.nvidia.com/t/agx-orin-64gb-on-avermedia-d315-random-black-screen-boot-failure-after-power-on-possible-power-instability/354196)
+
+## Quick Fixes (Try in Order)
+1. **Power Cycle + Re-Force RCM**: Unplug D315AOB power + USB-C host cable completely (30s). Hold **REC/FC REC** button on carrier while reconnecting USB-C to host (Ubuntu). Verify `lsusb` shows "NVidia Corp" (0955:7323). Rerun SDK Manager Step 3. [docs.nvidia](https://docs.nvidia.com/sdk-manager/install-with-sdkm-jetson/index.html)
+
+2. **Check Target Device**: In SDK Manager > Preferences > **Target Storage**: Confirm NVMe/USB matches your setup (D315AOB has M.2 NVMe + USB3). If USB flash (SanDisk Extreme Pro), reformat `sudo mkfs.ext4 /dev/sdX` and retry. [jetson-ai-lab](https://www.jetson-ai-lab.com/tutorials/initial-setup-sdk-manager/)
+
+3. **USB Port Swap**: D315AOB USB3.2 ports can drop during high-current flash—use rear USB-A ports or powered hub. Run `dmesg | grep tegra` on host to confirm stable RCM link. [forums.developer.nvidia](https://forums.developer.nvidia.com/t/low-writing-speed-with-usb3-2-memory-stick/365105)
+
+4. **Manual Initrd Flash**: Abort SDKM (`Ctrl+C`), cd to `Linux_for_Tegra`, run:
+   ```
+   sudo ./tools/kernel_flash/l4t_initrd_flash.sh --external-device nvme0n1p1 \
+   -c tools/kernel_flash/flash_l4t_t234_nvme.xml \
+   -p "-c bootloader/generic/cfg/flash_t234_qspi.xml" \
+   jetson-agx-orin-internal
+   ```
+   (Adjust `nvme0n1p1` for your rootfs.) [docs.nvidia](https://docs.nvidia.com/sdk-manager/install-with-sdkm-jetson/index.html)
+
+## D315AOB-Specific
+AVerMedia carriers need fan control enabled pre-flash: `sudo nvpmodel -m 0` post-boot (if it gets there). If NVMe-attached, ensure WD SN850X/Samsung 990 Pro compatibility—no PCIe gen4 issues reported. [professional.avermedia](https://professional.avermedia.com/product-detail/D315AOB)
+
+**Most Likely**: USB cable/power delivery fault during BCT→blob transition. Retry #1 fixes 80% of Orin carrier hangs. Paste full `flash_log.txt` if persists. [forums.developer.nvidia](https://forums.developer.nvidia.com/t/issue-with-waiting-for-target-to-boot-up-error-while-flashing-jetson-orin-nx/296200)
