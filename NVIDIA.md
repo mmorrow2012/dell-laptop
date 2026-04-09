@@ -23,6 +23,11 @@ Use `ubuntu2204` (or `ubuntu2004`/`ubuntu2404`) in the repo URL to match your di
 
 Run `sdkmanager --cli` post-install for Jetson/D315AOB SDK flashing as discussed earlier. [docs.nvidia](https://docs.nvidia.com/sdk-manager/sdkm-command-line-install/index.html)
 
+
+---
+
+<img width="1380" height="857" alt="image" src="https://github.com/user-attachments/assets/0fc60f65-7b4d-4a8c-ba55-e8816061219d" />
+
 ---
 
 The AVerMedia D315AOB is a Box PC carrier board for NVIDIA Jetson AGX Orin (with fan), featuring NVMe SSD support, GbE/10G Ethernet, USB ports, HDMI, and a micro USB for flashing. Flashing typically uses the AVerMedia BSP (like your previously mentioned AVERMEDIA_JETPACK-R1.2.3.6.2.1_desktop tarball) on an Ubuntu host PC. [youtube](https://www.youtube.com/watch?v=6pJGfF5oyIM)
