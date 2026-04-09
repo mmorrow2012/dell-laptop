@@ -73,3 +73,23 @@ Run flash: `sudo ./flash.sh jetson-agx-orin-devkit nvme0n1p1` (or board-specific
 
 ## Verification
 Reboot, login, run `jetson_release -v` (should show L4T r36.4.4/JetPack 6.2.1), `nvme list`, and `nvidia-smi`. If issues, check ERMI firmware or contact AVerMedia support. [blog.aetherix](https://blog.aetherix.com/flashing-the-pulsar-with-d315-5g-carrier-board-a-comprehensive-guide/)
+
+
+
+```
+                                                                                                                         │
+│info: [   0.3530 ] Sending bct_mem                                                                                                                                                                        │
+│info: [   0.3929 ] Sending blob                                                                                                                                                                           │
+│info: [   4.3174 ] RCM-boot started                                                                                                                                                                       │
+│info: /home/mickm/nvidia/nvidia_sdk/JetPack_6.2.2_Linux_JETSON_AGX_ORIN_TARGETS/Linux_for_Tegra                                                                                                           │
+│info: ***************************************                                                                                                                                                             │
+│info: *                                     *                                                                                                                                                             │
+│info: *  Step 3: Start the flashing process *                                                                                                                                                             │
+│info: *                                     *                                                                                                                                                             │
+│info: ***************************************                                                                                                                                                             │
+│info: Waiting for target to boot-up...                                                                                                                                                                    │
+│info: Waiting for target to boot-up...                                                                                                                                                                    │
+│info: Waiting for target to boot-up...                                                                                                                                                                    │
+│info: Waiting for target to boot-up...                                                                                                                                                                    │
+│info: Waiting for target to boot-up...
+``
