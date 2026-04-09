@@ -1,4 +1,4 @@
-nvidia jetpack orin use cases
+* nvidia jetson orin use cases
 
 NVIDIA Jetson Orin series, powered by JetPack SDK, excels in edge AI computing for robotics and vision tasks. It's widely used for real-time processing in compact, low-power devices like the Orin Nano and AGX Orin modules [1][2].
 ## Key Use Cases
