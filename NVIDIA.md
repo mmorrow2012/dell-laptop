@@ -92,7 +92,7 @@ Reboot, login, run `jetson_release -v` (should show L4T r36.4.4/JetPack 6.2.1), 
 │info: Waiting for target to boot-up...                                                                                                                                                                    │
 │info: Waiting for target to boot-up...                                                                                                                                                                    │
 │info: Waiting for target to boot-up...
-``
+```
 
 Your Jetson AGX Orin in the D315AOB is stuck after sending BCT_MEM blobs in RCM mode—common on custom/industrial carriers like AVerMedia during SDK Manager Step 3. [forums.developer.nvidia](https://forums.developer.nvidia.com/t/issue-with-waiting-for-target-to-boot-up-error-while-flashing-jetson-orin-nx/296200)
 
