@@ -32,6 +32,9 @@ Run `sdkmanager --cli` post-install for Jetson/D315AOB SDK flashing as discussed
 
 <img width="1850" height="1053" alt="image" src="https://github.com/user-attachments/assets/379cf091-61f0-44c3-b9a7-0cc5f80841da" />
 
+<img width="1850" height="1053" alt="image" src="https://github.com/user-attachments/assets/0475b10e-f9b1-4bba-9320-ff57ba951706" />
+
+
 <img width="1850" height="1053" alt="image" src="https://github.com/user-attachments/assets/3a17af5d-ca2c-4e20-ba77-c8a365248d1f" />
 
 ---
